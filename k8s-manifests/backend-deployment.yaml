@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: dream-dev
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: michaelo001/dream-vacay-app-backend:latest
+        ports:
+        - containerPort: 3001
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: DATABASE_URL
+        - name: COUNTRIES_API_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: COUNTRIES_API_BASE_URL

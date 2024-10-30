@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: dream-dev
+data:
+  COUNTRIES_API_BASE_URL: https://restcountries.com/v3.1

@@ -16,6 +16,33 @@ const pool = new Pool({
 
 const COUNTRIES_API_BASE_URL = process.env.COUNTRIES_API_BASE_URL || 'https://restcountries.com/v3.1';
 
+// function to create the table
+async function createTable() {
+  try {
+    // SQL query to create the table "destinations" if it does not exist
+    const createTableQuery = `
+      CREATE TABLE IF NOT EXISTS destinations (
+        id SERIAL PRIMARY KEY,
+        country VARCHAR(100) UNIQUE NOT NULL,
+        capital VARCHAR(100),
+        population BIGINT,
+        region VARCHAR(100)
+      );
+    `;
+    await pool.query(createTableQuery);
+    console.log('Destinations table created successfully');
+  } catch (err) {
+    console.error('Error creating destinations table:', err.message);
+    process.exit(1);
+  }
+}
+// Call the function to create the table "destinations"
+createTable();
+
+app.get('/', (req, res) => {
+  res.send('Backend is running')
+})
+
 app.get('/api/destinations', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM destinations ORDER BY id DESC');

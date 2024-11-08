@@ -1,0 +1,51 @@
+name: CI Pipeline
+
+on: 
+    push:
+        branches:
+            - main
+            - feature/*
+    # pull_request: 
+    #     branches:
+    #         - main
+        
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        services:
+            postgres:
+                image: postgres:13
+                ports: 
+                    - 5432:5432
+                env:
+                    POSTGRES_DB: ${{ vars.POSTGRES_DB }}
+                    POSTGRES_USER: ${{ vars.POSTGRES_USER }}
+                    POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+                options: >-
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
+
+        steps: 
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setting up node js
+              uses: actions/setup-node@v4
+              with:
+                node-version: '20'
+
+            - name: Install dependencies
+              run: |
+                cd backend && npm install
+                cd ../frontend && npm install
+
+            - name: Run backend tests
+              env:
+                DATABASE_URL: postgresql://${{ vars.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ vars.POSTGRES_DB }}
+              run: cd backend && npm test
+
+            - name: Run frontend tests
+              run: cd frontend && npm test

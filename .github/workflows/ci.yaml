@@ -37,6 +37,12 @@ jobs:
               with:
                 node-version: '20'
 
+            - name: Cache NPM Dependencies
+              uses: actions/cache@v3
+              with:
+                path: node_modules
+                key: ${{ runner.os }}-node-modules-${{ hashFiles('frontend/package-lock.json') }}
+
             - name: Install dependencies
               run: |
                 cd backend && npm install
@@ -45,7 +51,7 @@ jobs:
             - name: Run backend tests
               env:
                 DATABASE_URL: postgresql://${{ vars.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ vars.POSTGRES_DB }}
-              run: cd backend && npm start
+              run: cd backend && npm start&
 
             - name: Run frontend tests
-              run: cd frontend && npm start
+              run: cd frontend && npm start&

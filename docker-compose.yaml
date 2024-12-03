@@ -24,7 +24,7 @@ services:
     env_file:
       - ./backend/.env
     # environment:
-    #   DATABASE_URL: postgresql://michael:passwordpassword@db:5432/dreamvacations
+    #   DATABASE_URL: postgresql://valentine:passwordpassword@db:5432/dreamvacations
 
   db:
     image: postgres:13
@@ -32,7 +32,7 @@ services:
     env_file:
       - ./db/.env
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready --dbname dreamvacations --username michael"]
+      test: ["CMD-SHELL", "pg_isready --dbname dreamvacations --username valentine"]
       interval: 10s
       timeout: 5s
       retries: 5
